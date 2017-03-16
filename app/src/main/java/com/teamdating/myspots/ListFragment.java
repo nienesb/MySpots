@@ -1,5 +1,6 @@
 package com.teamdating.myspots;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -22,19 +23,24 @@ public class ListFragment extends Fragment {
     private Cursor mCursor;
     private ListView mListView;
     private SpotsDataSource mDatasource;
+    private FragmentManager mFragmentManager;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mFragmentManager = getSupportFragmentManager();
+        Fragment listFragment = mFragmentManager.findFragmentById(R.id.list_container);
+        if (listFragment == null) {
+            listFragment = new AnimalListFragment();
+            mFragmentManager.beginTransaction()
+                    .add(R.id.list_container, listFragment)
+                    .commit();
+        }
+
         mListView = (ListView) mListView.findViewById(R.id.list_view);
         mSpots = new ArrayList<SpotItem>();
         mDatasource = new SpotsDataSource(Context);
-
-        
-
-
-
 
     }
 

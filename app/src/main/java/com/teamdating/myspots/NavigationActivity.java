@@ -13,6 +13,8 @@ import com.google.android.gms.maps.MapFragment;
 
 public class NavigationActivity extends AppCompatActivity {
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
