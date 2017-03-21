@@ -17,13 +17,7 @@ public class NavigationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.content, ListFragment.newFragment(), "rageComicList")
-                    .commit();
-        }
-
+        
         setupNavigationView();
     }
 

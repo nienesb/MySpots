@@ -5,9 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.database.Cursor;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,24 +20,17 @@ import android.widget.ListView;
 
 public class ListFragment extends Fragment {
 
-    private ListView mListView;
+    private RecyclerView mRecyclerView;
 
-    public static ListFragment newFragment() {
-        ListFragment newFragment = new ListFragment();
-        return newFragment;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,@Nullable ViewGroup container,@Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_list, container, false);
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        mListView = (ListView) view.findViewById(R.id.list_view);
+        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.spots_recycler_view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setAdapter(new SpotAdapter());
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
