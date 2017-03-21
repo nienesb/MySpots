@@ -31,8 +31,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 SpotsDBSchema.SpotsTable.Colums._id + " integer primary key autoincrement, " +
                 SpotsDBSchema.SpotsTable.Colums.TITLE + ", " +
                 SpotsDBSchema.SpotsTable.Colums.CITY + ", " +
-                SpotsDBSchema.SpotsTable.Colums.LATITUDE + ", " +
-                SpotsDBSchema.SpotsTable.Colums.LONGITUDE + " )");
+                SpotsDBSchema.SpotsTable.Colums.LATITUDE + " REAL," +
+                SpotsDBSchema.SpotsTable.Colums.LONGITUDE + " REAL" + ")");
     }
 
     @Override

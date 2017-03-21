@@ -42,7 +42,7 @@ public class PlacesProvider extends ContentProvider{
             selection = DatabaseHelper.ALL_COLUMNS + "=?" + uri.getLastPathSegment();
         }
         // The data is filtered in the UI so the 'selection' argument is passed with it
-        return mDatabase.query(DatabaseHelper.TABLE_LOCATIONS, DatabaseHelper.ALL_COLUMNS, selection, null, null, null, null);
+        return mDatabase.query(SpotsDBSchema.SpotsTable.NAME, DatabaseHelper.ALL_COLUMNS, selection, null, null, null, null);
     }
 
     @Nullable
@@ -54,18 +54,18 @@ public class PlacesProvider extends ContentProvider{
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        long id = mDatabase.insert(DatabaseHelper.TABLE_LOCATIONS, null, values);
+        long id = mDatabase.insert(SpotsDBSchema.SpotsTable.NAME, null, values);
         //Create the URI to pass back that includes the new primary key value.
         return Uri.parse(BASE_PATH + "/" + id);
     }
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return mDatabase.delete(DatabaseHelper.TABLE_LOCATIONS, selection, selectionArgs);
+        return mDatabase.delete(SpotsDBSchema.SpotsTable.NAME, selection, selectionArgs);
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return mDatabase.update(DatabaseHelper.TABLE_LOCATIONS, values, selection, selectionArgs);
+        return mDatabase.update(SpotsDBSchema.SpotsTable.NAME, values, selection, selectionArgs);
     }
 }

@@ -13,8 +13,8 @@ public class SpotsDBSchema {
             public static final String _id = "_id";
             public static final String TITLE = "name";
             public static final String CITY = "city";
-            public static final double LATITUDE = Double.parseDouble("latitude");
-            public static final double LONGITUDE = Double.parseDouble("longitude");
+            public static final String LATITUDE = "latitude";
+            public static final String LONGITUDE = "longitude";
         }
     }
 }
