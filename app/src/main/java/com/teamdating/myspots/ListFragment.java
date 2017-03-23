@@ -36,12 +36,11 @@ public class ListFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_list_row, container, false);
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.spots_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(new SpotAdapter(SpotAdapter.MyViewHolder.populateRow(mItems), R.layout.activity_list_row));
+        //mRecyclerView.setAdapter(new SpotAdapter(SpotAdapter.MyViewHolder.populateRow(mItems), R.layout.activity_list_row));
 
         SpotItem spotItemList[] = {
                 new SpotItem("Zara", "Haarlem", 52.378757, 4.632956)
         };
-
 
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
