@@ -27,6 +27,8 @@ public class ListFragment extends Fragment {
     private SpotsDataSource mDataSource;
     private SpotAdapter mAdapter;
     private List<SpotItem> mItems;
+    private Cursor mCursor;
+    private SpotsDataSource mDatasource;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
@@ -34,14 +36,16 @@ public class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,@Nullable ViewGroup container,@Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.activity_list_row, container, false);
-        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.spots_recycler_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        //mRecyclerView.setAdapter(new SpotAdapter(SpotAdapter.MyViewHolder.populateRow(mItems), R.layout.activity_list_row));
+        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.idRecyclerview);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(new SpotAdapter(getContext(), mCursor));
 
         SpotItem spotItemList[] = {
                 new SpotItem("Zara", "Haarlem", 52.378757, 4.632956)
         };
 
+        updateUi();
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -52,6 +56,15 @@ public class ListFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void updateUi() {
+        mCursor = mDatasource.getAllSpots();
+        if (mAdapter == null) {
+            mAdapter = new SpotAdapter(getContext(), mCursor);
+            mRecyclerView.setAdapter(mAdapter);
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 package com.teamdating.myspots;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import javax.sql.DataSource;
+
+import static android.R.attr.id;
 import static android.support.v7.widget.RecyclerView.*;
 
 /**
@@ -20,12 +24,16 @@ import static android.support.v7.widget.RecyclerView.*;
 
 public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.MyViewHolder> {
 
-    final Context context;
-    private final List<SpotItem> spotItemList;
+    private Context mContext;
+    private Cursor mCursor;
+    private int mIdColumn;
+    private DataSource mDataSource;
+    private List<SpotItem> spotItemList;
 
-    public SpotAdapter(List<SpotItem> spotItemList, Context context) {
-        this.spotItemList = spotItemList;
-        this.context = context;
+    public SpotAdapter(Context context, Cursor cursor) {
+        this.mContext = context;
+        mCursor = cursor;
+        mDataSource = (DataSource) new SpotsDataSource(context);
     }
 
     @Override
@@ -39,7 +47,10 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.MyViewHolder> 
 
     @Override
     public long getItemId(int position) {
-        return spotItemList.get(position).getId();
+        if (mCursor == null || !mCursor.moveToPosition(position)) {
+            return 0;
+        }
+        return mCursor.getLong(mIdColumn);
     }
 
     public void updateList(List<SpotItem> newList) {
@@ -49,17 +60,39 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.MyViewHolder> 
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.activity_list_row, parent, false);
-        return new MyViewHolder(itemView);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View itemView = inflater.inflate(R.layout.activity_list_row, parent, false);
+        SpotAdapter.MyViewHolder viewHolder = new SpotAdapter.MyViewHolder(itemView);
+        return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(SpotAdapter.MyViewHolder holder, int position) {
-        holder.populateRow(getItem(position));
+    public void onBindViewHolder(SpotAdapter.MyViewHolder holder, final int position) {
+        if (mCursor != null && mCursor.moveToPosition(position)) {
+            SpotItem spotItem = SpotsDataSource.getSpotsById(id);
+            holder.populateRow(getItem(position));
+            holder.itemView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mCursor.moveToPosition(position);
+                    SpotItem clickedItem = SpotsDataSource.getSpotsById(id);
+                    Intent intent = new Intent(mContext, NewSpotActivity.class);
+                }
+            });
+        }
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public void swapCursor(Cursor cursor) {
+        if (cursor != null) {
+            mCursor = cursor;
+            mIdColumn = cursor.getColumnIndexOrThrow(String.valueOf(DatabaseHelper.ALL_COLUMNS));
+        } else {
+            mCursor = null;
+            mIdColumn = -1;
+        }
+    }
+
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         protected TextView vName;
         protected TextView vCity;

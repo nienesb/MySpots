@@ -12,6 +12,7 @@ public class PlaceCursorWrapper extends CursorWrapper {
     public PlaceCursorWrapper(Cursor cursor) {
         super(cursor);
     }
+
     public SpotItem getPlace() {
         String id = getString(getColumnIndex(SpotsDBSchema.SpotsTable.Colums._id));
         String name = getString(getColumnIndex(SpotsDBSchema.SpotsTable.Colums.TITLE));
