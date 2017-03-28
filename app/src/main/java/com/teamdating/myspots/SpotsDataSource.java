@@ -57,7 +57,9 @@ public class SpotsDataSource {
         return new PlaceCursorWrapper(cursor);
     }
 
-    public Cursor getAllSpots() { return querySpots(null, null); }
+    public Cursor getAllSpots() {
+        return querySpots(null, null);
+    }
 
     public SpotItem getSpotsById(long id) {
         PlaceCursorWrapper cursor = querySpots(SpotsDBSchema.SpotsTable.Colums._id + "=?",

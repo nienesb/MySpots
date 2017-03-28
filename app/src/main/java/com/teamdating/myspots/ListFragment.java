@@ -23,12 +23,13 @@ import java.util.List;
 
 public class ListFragment extends Fragment {
 
+
+    private RecyclerView.LayoutManager mLayoutManager;
+
     private RecyclerView mRecyclerView;
-    private SpotsDataSource mDataSource;
     private SpotAdapter mAdapter;
     private List<SpotItem> mItems;
-    private Cursor mCursor;
-    private SpotsDataSource mDatasource;
+    private PlaceCursorWrapper mCursor;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
@@ -36,9 +37,12 @@ public class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,@Nullable ViewGroup container,@Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.activity_list_row, container, false);
-        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.idRecyclerview);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+
+        mLayoutManager = new LinearLayoutManager(this.getContext());
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.idRecyclerview);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(new SpotAdapter(getContext(), mCursor));
 
         SpotItem spotItemList[] = {
@@ -60,7 +64,8 @@ public class ListFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void updateUi() {
-        mCursor = mDatasource.getAllSpots();
+        SpotsDataSource mDatasource = new SpotsDataSource(getContext());
+        mCursor = (PlaceCursorWrapper) mDatasource.getAllSpots();
         if (mAdapter == null) {
             mAdapter = new SpotAdapter(getContext(), mCursor);
             mRecyclerView.setAdapter(mAdapter);

@@ -33,12 +33,11 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.MyViewHolder> 
     public SpotAdapter(Context context, Cursor cursor) {
         this.mContext = context;
         mCursor = cursor;
-        mDataSource = (DataSource) new SpotsDataSource(context);
     }
 
     @Override
     public int getItemCount() {
-        return spotItemList.size();
+        return spotItemList == null ? 0 : spotItemList.size();
     }
 
     private SpotItem getItem(int position) {
@@ -69,13 +68,15 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.MyViewHolder> 
     @Override
     public void onBindViewHolder(SpotAdapter.MyViewHolder holder, final int position) {
         if (mCursor != null && mCursor.moveToPosition(position)) {
-            SpotItem spotItem = SpotsDataSource.getSpotsById(id);
+            SpotsDataSource SDS = new SpotsDataSource(mContext);
+            SpotItem spotItem = SDS.getSpotsById(id);
             holder.populateRow(getItem(position));
             holder.itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mCursor.moveToPosition(position);
-                    SpotItem clickedItem = SpotsDataSource.getSpotsById(id);
+                    SpotsDataSource SDS = new SpotsDataSource(mContext);
+                    SpotItem clickedItem = SDS.getSpotsById(id);
                     Intent intent = new Intent(mContext, NewSpotActivity.class);
                 }
             });

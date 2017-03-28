@@ -1,7 +1,6 @@
 package com.teamdating.myspots;
 
 import android.app.*;
-import android.app.ListFragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
