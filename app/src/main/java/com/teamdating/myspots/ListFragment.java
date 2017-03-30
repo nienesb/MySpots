@@ -21,7 +21,7 @@ import android.widget.ListView;
 
 import java.util.List;
 
-public class ListFragment extends Fragment {
+public class ListFragment extends Fragment implements View.OnClickListener {
 
 
     private RecyclerView.LayoutManager mLayoutManager;
@@ -45,20 +45,15 @@ public class ListFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(new SpotAdapter(getContext(), mCursor));
 
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setOnClickListener(this);
+
         SpotItem spotItemList[] = {
                 new SpotItem("Zara", "Haarlem", 52.378757, 4.632956)
         };
 
         updateUi();
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), NewSpotActivity.class);
-                startActivity(intent);
-            }
-        });
         return view;
     }
 
@@ -70,6 +65,12 @@ public class ListFragment extends Fragment {
             mAdapter = new SpotAdapter(getContext(), mCursor);
             mRecyclerView.setAdapter(mAdapter);
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent = new Intent(v.getContext(), NewSpotActivity.class);
+        startActivity(intent);
     }
 }
 
