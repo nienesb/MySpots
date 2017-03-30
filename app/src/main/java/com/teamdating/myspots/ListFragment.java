@@ -25,7 +25,6 @@ public class ListFragment extends Fragment implements View.OnClickListener, Load
 
 
     private RecyclerView.LayoutManager mLayoutManager;
-
     private RecyclerView mRecyclerView;
     private SpotAdapter mAdapter;
     private List<SpotItem> mItems;
