@@ -13,12 +13,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "spots.db";
     private static final int VERSION = 1;
-    private static String ID;
+    private static String _id;
     private static String TITLE;
     private static String CITY;
     private static double LATITUDE;
     private static double LONGITUDE;
-    public static final String[] ALL_COLUMNS = new String[]{ID, TITLE, CITY, String.valueOf(LATITUDE), String.valueOf(LONGITUDE)};
+    public static final String[] ALL_COLUMNS = new String[]{"_id", "name", "city", "latitude", "longitude"};
+
+   // public static final String[] ALL_COLUMNS = new String[]{_id, TITLE, CITY, String.valueOf(LATITUDE), String.valueOf(LONGITUDE)};
 
 
     public DatabaseHelper(Context context) {

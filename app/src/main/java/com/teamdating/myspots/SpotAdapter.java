@@ -86,7 +86,7 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.MyViewHolder> 
     public void swapCursor(Cursor cursor) {
         if (cursor != null) {
             mCursor = cursor;
-            mIdColumn = cursor.getColumnIndexOrThrow(String.valueOf(DatabaseHelper.ALL_COLUMNS));
+            mIdColumn = cursor.getColumnIndexOrThrow(String.valueOf(SpotsDBSchema.SpotsTable.Colums._id));
         } else {
             mCursor = null;
             mIdColumn = -1;
