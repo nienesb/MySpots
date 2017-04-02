@@ -52,6 +52,7 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
 
         mNameEditText = (EditText) findViewById(R.id.edit_text_place_name);
         mUri = getIntent().getParcelableExtra(PlacesProvider.CONTENT_ITEM_TYPE);
+        mAction = getIntent().getAction();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -127,9 +128,35 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
     }
 
+    mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+        @Override
+        public void onMarkerDragStart(Marker marker) {
+            marker.remove();
+        }
+        @Override
+        public void onMarkerDrag(Marker marker) {
+        }
+        @Override
+        public void onMarkerDragEnd(Marker marker) {
+        }
+    });
+
+    // add new marker on long click
+    mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                addMarker(latLng);
+                // set the LatLng values each time a new marker is created
+                mPlace.setLatitude(mMarker.getPosition().latitude);
+                mPlace.setLongitude(mMarker.getPosition().longitude);
+                mPlace.setCity(showCityName(mPlace.getLatitude(), mPlace.getLongitude()));
+            }
+        });
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (mAction.equals(Intent.ACTION_EDIT)) {
+
+        if (mAction != null && mAction.equals(Intent.ACTION_EDIT)) {
             getMenuInflater().inflate(R.menu.menu_search, menu);
         }
         return true;
