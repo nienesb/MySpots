@@ -61,6 +61,7 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
 
         public void populateMap () {
             mPlace = new SpotItem("name", "city", latitude, longitude);
@@ -87,7 +88,6 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
                 mNameEditText.setText(mPlace.getName());
             }
         }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -110,6 +110,7 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.getUiSettings().setMapToolbarEnabled(true);
         enableMyLocation();
+
         // remove the marker when a new one is placed
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
@@ -125,6 +126,7 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
             public void onMarkerDragEnd(Marker marker) {
             }
         });
+
         // add new marker on long click
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
@@ -137,7 +139,7 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
             }
         });
 
-        if (mPlace.getLatitude() != 0.0 && mPlace.getLongitude() != 0.0) {
+        if (mPlace != null && mPlace.getLatitude() != 0.0 && mPlace.getLongitude() != 0.0) {
             // add marker and animate camera
             LatLng latLng = new LatLng(mPlace.getLatitude(), mPlace.getLongitude());
             addMarker(latLng);
