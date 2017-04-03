@@ -9,7 +9,6 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +16,7 @@ import android.view.Menu;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -29,6 +29,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.List;
 import java.util.Locale;
 
+import static com.teamdating.myspots.R.id.city;
+import static com.teamdating.myspots.R.id.latitude;
+import static com.teamdating.myspots.R.id.longitude;
+import static com.teamdating.myspots.R.id.name;
+
 public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private EditText mNameEditText;
@@ -36,7 +41,6 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
     private Marker mMarker;
     private SpotItem mPlace;
     private Uri mUri;
-
     private int PERMISSIONS_REQUEST_LOCATION;
     private GoogleMap mMap;
     private String mAction;
@@ -45,7 +49,6 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -58,6 +61,45 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        public void populateMap () {
+            mPlace = new SpotItem("name", "city", latitude, longitude);
+            // If the mUri is NULL, the activity is setup empty and seen as a new mPlace
+            if (mUri == null) {
+                mAction = Intent.ACTION_INSERT;
+                setTitle("New Place");
+            } else {
+                // If the mUri is not NULL, the activity is loaded with the data from the database
+                setTitle("Edit Place");
+                mAction = Intent.ACTION_EDIT;
+                mPlaceFilter = SpotsDBSchema.SpotsTable.Colums._id + "=" + mUri.getLastPathSegment();
+                PlaceCursorWrapper cursor = new PlaceCursorWrapper(getContentResolver().query(
+                        PlacesProvider.CONTENT_URI,
+                        DatabaseHelper.ALL_COLUMNS,
+                        mPlaceFilter,
+                        null,
+                        null
+                ));
+                cursor.moveToFirst();
+                mPlace = cursor.getPlace();
+                cursor.close();
+                // Set the values in the view
+                mNameEditText.setText(mPlace.getName());
+            }
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (mAction.equals(Intent.ACTION_INSERT)) {
+            getMenuInflater().inflate(R.menu.context_menu, menu);
+        }
+
+        if (mAction.equals(Intent.ACTION_EDIT)) {
+            getMenuInflater().inflate(R.menu.edit_menu, menu);
+        }
+
+        return true;
     }
 
     @Override
@@ -68,6 +110,44 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.getUiSettings().setMapToolbarEnabled(true);
         enableMyLocation();
+        // remove the marker when a new one is placed
+        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+                marker.remove();
+            }
+
+            @Override
+            public void onMarkerDrag(Marker marker) {
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+            }
+        });
+        // add new marker on long click
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                addMarker(latLng);
+                // set the LatLng values each time a new marker is created
+                mPlace.setLatitude(mMarker.getPosition().latitude);
+                mPlace.setLongitude(mMarker.getPosition().longitude);
+                mPlace.setCity(showCityName(mPlace.getLatitude(), mPlace.getLongitude()));
+            }
+        });
+
+        if (mPlace.getLatitude() != 0.0 && mPlace.getLongitude() != 0.0) {
+            // add marker and animate camera
+            LatLng latLng = new LatLng(mPlace.getLatitude(), mPlace.getLongitude());
+            addMarker(latLng);
+            CameraUpdate markerLocation = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+            mMap.animateCamera(markerLocation);
+        } else {
+            LatLng latLng = new LatLng(52.092876, 5.104480);
+            CameraUpdate markerLocation = CameraUpdateFactory.newLatLngZoom(latLng, 6);
+            mMap.animateCamera(markerLocation);
+        }
     }
 
     private void enableMyLocation() {
@@ -128,40 +208,6 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
     }
 
-    mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-        @Override
-        public void onMarkerDragStart(Marker marker) {
-            marker.remove();
-        }
-        @Override
-        public void onMarkerDrag(Marker marker) {
-        }
-        @Override
-        public void onMarkerDragEnd(Marker marker) {
-        }
-    });
-
-    // add new marker on long click
-    mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick(LatLng latLng) {
-                addMarker(latLng);
-                // set the LatLng values each time a new marker is created
-                mPlace.setLatitude(mMarker.getPosition().latitude);
-                mPlace.setLongitude(mMarker.getPosition().longitude);
-                mPlace.setCity(showCityName(mPlace.getLatitude(), mPlace.getLongitude()));
-            }
-        });
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        if (mAction != null && mAction.equals(Intent.ACTION_EDIT)) {
-            getMenuInflater().inflate(R.menu.menu_search, menu);
-        }
-        return true;
-    }
-
     private void finishEditing() {
         // get the string from the EditText and set it in the object
         String name = mNameEditText.getText().toString().trim();
@@ -173,6 +219,13 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
                 } else {
                     addPlace(mPlace);
                 }
+                break;
+            case Intent.ACTION_EDIT:
+                if (name.length() == 0) {
+                    deletePlace();
+                } else {
+                    updatePlace(mPlace);
+                }
         }
         finish();
     }
@@ -182,9 +235,17 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
         switch ((int) item.getId()) {
             case android.R.id.home:
                 finish();
+                break;
+            case R.id.delete_place:
+                deletePlace();
+                break;
+            case R.id.add_place:
+                finishEditing();
+                break;
     }
         return true;
-    };
+    }
+
 
     private void updatePlace(SpotItem hotspots) {
         ContentValues values = new ContentValues();
