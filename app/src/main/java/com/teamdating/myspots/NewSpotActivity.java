@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -26,6 +27,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -61,33 +64,37 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        populateMap();
     }
 
-        public void populateMap () {
-            mPlace = new SpotItem("name", "city", latitude, longitude);
-            // If the mUri is NULL, the activity is setup empty and seen as a new mPlace
-            if (mUri == null) {
-                mAction = Intent.ACTION_INSERT;
-                setTitle("New Place");
-            } else {
-                // If the mUri is not NULL, the activity is loaded with the data from the database
-                setTitle("Edit Place");
-                mAction = Intent.ACTION_EDIT;
-                mPlaceFilter = SpotsDBSchema.SpotsTable.Colums._id + "=" + mUri.getLastPathSegment();
-                PlaceCursorWrapper cursor = new PlaceCursorWrapper(getContentResolver().query(
-                        PlacesProvider.CONTENT_URI,
-                        DatabaseHelper.ALL_COLUMNS,
-                        mPlaceFilter,
-                        null,
-                        null
-                ));
-                cursor.moveToFirst();
-                mPlace = cursor.getPlace();
-                cursor.close();
-                // Set the values in the view
-                mNameEditText.setText(mPlace.getName());
-            }
+
+    public void populateMap() {
+        mPlace = new SpotItem(null,null, latitude, longitude);
+        // If the mUri is NULL, the activity is setup empty and seen as a new mPlace
+        if (mUri == null) {
+            mAction = Intent.ACTION_INSERT;
+            setTitle("New Place");
+        } else {
+            // If the mUri is not NULL, the activity is loaded with the data from the database
+            setTitle("Edit Place");
+            mAction = Intent.ACTION_EDIT;
+            mPlaceFilter = SpotsDBSchema.SpotsTable.Colums._id + "=" + mUri.getLastPathSegment();
+            PlaceCursorWrapper cursor = new PlaceCursorWrapper(getContentResolver().query(
+                    PlacesProvider.CONTENT_URI,
+                    DatabaseHelper.ALL_COLUMNS,
+                    mPlaceFilter,
+                    null,
+                    null
+            ));
+            cursor.moveToFirst();
+            mPlace = cursor.getPlace();
+            cursor.close();
+            // Set the values in the view
+            mNameEditText.setText(mPlace.getName());
         }
+    }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -128,7 +135,7 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
         });
 
         // add new marker on long click
-        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+       mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
                 addMarker(latLng);
@@ -138,8 +145,8 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
                 mPlace.setCity(showCityName(mPlace.getLatitude(), mPlace.getLongitude()));
             }
         });
-
-        if (mPlace != null && mPlace.getLatitude() != 0.0 && mPlace.getLongitude() != 0.0) {
+//Tijdelijke fix om if else te omzeilen 1==2 toegevoegd
+       if (mPlace != null && mPlace.getLatitude() != 0.0 && mPlace.getLongitude() != 0.0 && 1==2) {
             // add marker and animate camera
             LatLng latLng = new LatLng(mPlace.getLatitude(), mPlace.getLongitude());
             addMarker(latLng);
@@ -187,6 +194,7 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
 
     // This method returns a String value representing the name of the city given any coordinates.
     // When no city is found a default value will be returned
+    
     private String showCityName(double latitude, double longitude) {
         String cityName = "*No City*";
         Geocoder geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
@@ -199,7 +207,24 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
         }
         return cityName;
     }
+    private List<Double> showLatLong(String locationName) {
+        List<Double> list = new ArrayList<Double>();
+        Geocoder geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocationName(locationName, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (addresses.size() > 0) {
+            list.add(addresses.get(0).getLatitude());
+            list.add(addresses.get(0).getLongitude());
 
+
+            return list;
+        }
+        return list;
+    }
     private void addMarker(LatLng latLng) {
         mMap.clear();
         mMarker = mMap.addMarker(new MarkerOptions()
@@ -213,7 +238,9 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
     private void finishEditing() {
         // get the string from the EditText and set it in the object
         String name = mNameEditText.getText().toString().trim();
-        mPlace.setName(name);
+        List<Double> latlonng = showLatLong(name);
+        mPlace = new SpotItem(name, showCityName(latlonng.get(0),latlonng.get(1)), latlonng.get(0),latlonng.get(1));
+
         switch (mAction) {
             case Intent.ACTION_INSERT:
                 if (name.length() == 0) {
@@ -233,8 +260,8 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
     }
 
    // @Override
-    public boolean onOptionsItemSelected(SpotItem item) {
-        switch ((int) item.getId()) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch ((int) item.getItemId()) {
             case android.R.id.home:
                 finish();
                 break;

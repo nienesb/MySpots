@@ -16,8 +16,8 @@ public class SpotItem {
     public SpotItem (String name, String city, double latitude, double longitude) {
         this.name = name;
         this.city = city;
-        this.latitude = 0;
-        this.longitude = 0;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public long getId() {
@@ -29,7 +29,8 @@ public class SpotItem {
     }
 
     public String setName(String name) {
-        return this.name;
+
+        return name;
     }
 
     public String getName() {
