@@ -17,16 +17,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 import static android.app.Activity.RESULT_OK;
 
 public class ListFragment extends Fragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
-
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView mRecyclerView;
     private SpotAdapter mAdapter;
+    private SpotsDataSource mDatasource;
     private List<SpotItem> mItems;
     private PlaceCursorWrapper mCursor;
     private static final int PLACE_DETAIL_REQUEST_CODE = 1234;
@@ -35,6 +38,11 @@ public class ListFragment extends Fragment implements View.OnClickListener, Load
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,@Nullable ViewGroup container,@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mDatasource = new SpotsDataSource(getContext());
+        mCursor = new PlaceCursorWrapper(mCursor);
+        mItems = new ArrayList<>();
 
         View view = inflater.inflate(R.layout.activity_list_row, container, false);
 
@@ -42,30 +50,30 @@ public class ListFragment extends Fragment implements View.OnClickListener, Load
         mRecyclerView = (RecyclerView) view.findViewById(R.id.idRecyclerview);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(false);
         mRecyclerView.setAdapter(new SpotAdapter(getContext(), mCursor));
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(this);
 
-        SpotItem spotItemList[] = {
+        /*SpotItem spotItemList[] = {
                 new SpotItem("Zara", "Haarlem", 52.378757, 4.632956)
-        };
+        };*/
 
+        getLoaderManager().initLoader(0, null, this).forceLoad();
         updateUi();
-
-        getLoaderManager().initLoader(0, null, this);
 
         return view;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void updateUi() {
-        SpotsDataSource mDatasource = new SpotsDataSource(getContext());
         mCursor = (PlaceCursorWrapper) mDatasource.getAllSpots();
         if (mAdapter == null) {
             mAdapter = new SpotAdapter(getContext(), mCursor);
             mRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.swapCursor(mCursor);
         }
     }
 

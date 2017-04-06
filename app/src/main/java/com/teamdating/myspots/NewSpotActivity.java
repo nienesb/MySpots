@@ -67,7 +67,7 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
         populateMap();
     }
 
-
+    // check if action is edit or insert
     public void populateMap() {
         mPlace = new SpotItem(null,null, latitude, longitude);
         // If the mUri is NULL, the activity is setup empty and seen as a new mPlace
@@ -145,7 +145,8 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
                 mPlace.setCity(showCityName(mPlace.getLatitude(), mPlace.getLongitude()));
             }
         });
-//Tijdelijke fix om if else te omzeilen 1==2 toegevoegd
+
+        // Tijdelijke fix om if else te omzeilen 1==2 toegevoegd
        if (mPlace != null && mPlace.getLatitude() != 0.0 && mPlace.getLongitude() != 0.0 && 1==2) {
             // add marker and animate camera
             LatLng latLng = new LatLng(mPlace.getLatitude(), mPlace.getLongitude());
@@ -207,6 +208,7 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
         }
         return cityName;
     }
+
     private List<Double> showLatLong(String locationName) {
         List<Double> list = new ArrayList<Double>();
         Geocoder geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
@@ -220,11 +222,11 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
             list.add(addresses.get(0).getLatitude());
             list.add(addresses.get(0).getLongitude());
 
-
             return list;
         }
         return list;
     }
+
     private void addMarker(LatLng latLng) {
         mMap.clear();
         mMarker = mMap.addMarker(new MarkerOptions()
