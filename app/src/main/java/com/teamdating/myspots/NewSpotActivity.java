@@ -51,7 +51,7 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
     private String mAction;
     private SpotsDataSource mDatasource;
     private PlaceCursorWrapper mCursor;
-
+    private SpotAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +63,7 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
 
         mDatasource = new SpotsDataSource(this);
         mCursor = new PlaceCursorWrapper(mCursor);
+        mAdapter = new SpotAdapter(mCursor);
 
         mNameEditText = (EditText) findViewById(R.id.edit_text_place_name);
         mUri = getIntent().getParcelableExtra(PlacesProvider.CONTENT_ITEM_TYPE);
@@ -264,52 +265,23 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
                     mDatasource.updateSpot(mPlace);
                 }
         }
+        mAdapter.notifyDataSetChanged();
         finish();
     }
 
-   // @Override
+    // @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch ((int) item.getItemId()) {
             case android.R.id.home:
                 finish();
                 break;
             case R.id.delete_place:
-                deletePlace();
+                mDatasource.deleteSpot(id);
                 break;
             case R.id.add_place:
                 finishEditing();
                 break;
-    }
+        }
         return true;
-    }
-
-
-    private void updatePlace(SpotItem hotspots) {
-        ContentValues values = new ContentValues();
-        values.put(SpotsDBSchema.SpotsTable.Colums.TITLE, hotspots.getName());
-        values.put(SpotsDBSchema.SpotsTable.Colums.CITY, hotspots.getCity());
-        values.put(String.valueOf(SpotsDBSchema.SpotsTable.Colums.LONGITUDE), hotspots.getLongitude());
-        values.put(String.valueOf(SpotsDBSchema.SpotsTable.Colums.LATITUDE), hotspots.getLatitude());
-        getContentResolver().update(PlacesProvider.CONTENT_URI, values, mPlaceFilter, null);
-        Toast.makeText(NewSpotActivity.this, "Place updated", Toast.LENGTH_SHORT).show();
-        setResult(RESULT_OK);
-    }
-
-    private void addPlace(SpotItem hotspots) {
-        ContentValues values = new ContentValues();
-        values.put(SpotsDBSchema.SpotsTable.Colums.TITLE, hotspots.getName());
-        values.put(SpotsDBSchema.SpotsTable.Colums.CITY, hotspots.getCity());
-        values.put(String.valueOf(SpotsDBSchema.SpotsTable.Colums.LONGITUDE), hotspots.getLongitude());
-        values.put(String.valueOf(SpotsDBSchema.SpotsTable.Colums.LATITUDE), hotspots.getLatitude());
-        getContentResolver().insert(PlacesProvider.CONTENT_URI, values);
-        Toast.makeText(NewSpotActivity.this, "Place added", Toast.LENGTH_SHORT).show();
-        setResult(RESULT_OK);
-    }
-
-    private void deletePlace() {
-        getContentResolver().delete(PlacesProvider.CONTENT_URI, mPlaceFilter, null);
-        Toast.makeText(NewSpotActivity.this, "Place deleted", Toast.LENGTH_SHORT).show();
-        setResult(RESULT_OK);
-        finish();
     }
 }

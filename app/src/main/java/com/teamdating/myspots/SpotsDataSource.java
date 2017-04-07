@@ -16,7 +16,7 @@ import android.util.Log;
 public class SpotsDataSource {
 
     private SQLiteDatabase mDatabase;
-    private SQLiteOpenHelper dbHelper;
+    private DatabaseHelper dbHelper;
 
     public SpotsDataSource (Context context) {
         dbHelper = new DatabaseHelper(context);

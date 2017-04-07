@@ -4,18 +4,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.CursorWrapper;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
 
 import static android.R.attr.id;
+import static android.app.PendingIntent.getActivity;
+import static android.support.v4.app.ActivityCompat.startActivityForResult;
 import static android.support.v7.widget.RecyclerView.*;
 
 /**
@@ -25,23 +30,66 @@ import static android.support.v7.widget.RecyclerView.*;
 public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.MyViewHolder> {
 
     private Context mContext;
-    private Cursor mCursor;
-    private int mIdColumn;
-    private DataSource mDataSource;
-    private List<SpotItem> spotItemList;
+    private PlaceCursorWrapper mCursor;
+    private SpotsDataSource mDatasource;
 
-    public SpotAdapter(Context context, Cursor cursor) {
-        this.mContext = context;
-        mCursor = cursor;
+    // A reference to the column, used to get the ID of an item.
+    private int mIdColumn;
+
+    private static final int EDITOR_REQUEST_CODE = 1234;
+
+    private List<SpotItem> spotItemList = new ArrayList<>();
+
+    public SpotAdapter(Cursor cursor) {
+        swapCursor(cursor);
+    }
+
+    @Override
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View itemView = inflater.inflate(R.layout.activity_list_row, parent, false);
+        return new MyViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(SpotAdapter.MyViewHolder holder, final int position) {
+        if (mCursor != null && mCursor.moveToPosition(position)) {
+
+            //fetch place from cursorwrapper
+            SpotItem spotitem = mCursor.getPlace();
+            holder.vName.setText(spotitem.getName());
+            holder.vCity.setText(spotitem.getCity());
+            holder.vLongitude.setText(String.valueOf(spotitem.getLongitude()));
+            holder.vLatitude.setText(String.valueOf(spotitem.getLatitude()));
+
+            final long itemId = getItemId(position);
+            holder.itemView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), NewSpotActivity.class);
+                    Uri uri = Uri.parse(PlacesProvider.CONTENT_URI + "/" + itemId);
+                    intent.putExtra(PlacesProvider.CONTENT_ITEM_TYPE, uri);
+                    v.getContext().startActivity(intent);
+                }
+            });
+
+            holder.itemView.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    mDatasource = new SpotsDataSource(v.getContext());
+                    mDatasource.deleteSpot(id);
+                    return true;
+                }
+            });
+        }
     }
 
     @Override
     public int getItemCount() {
-        return spotItemList == null ? 0 : spotItemList.size();
-    }
-
-    private SpotItem getItem(int position) {
-        return spotItemList.get(position);
+        if (mCursor == null) {
+            return 0;
+        }
+        return mCursor.getCount();
     }
 
     @Override
@@ -52,44 +100,15 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.MyViewHolder> 
         return mCursor.getLong(mIdColumn);
     }
 
-    public void updateList(List<SpotItem> newList) {
-        spotItemList.clear();
-        spotItemList.addAll(newList);
-    }
-
-    @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        View itemView = inflater.inflate(R.layout.activity_list_row, parent, false);
-        SpotAdapter.MyViewHolder viewHolder = new SpotAdapter.MyViewHolder(itemView);
-        return viewHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(SpotAdapter.MyViewHolder holder, final int position) {
-        if (mCursor != null && mCursor.moveToPosition(position)) {
-            SpotsDataSource SDS = new SpotsDataSource(mContext);
-            SpotItem spotItem = SDS.getSpotsById(id);
-            holder.populateRow(getItem(position));
-            holder.itemView.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mCursor.moveToPosition(position);
-                    SpotsDataSource SDS = new SpotsDataSource(mContext);
-                    SpotItem clickedItem = SDS.getSpotsById(id);
-                    Intent intent = new Intent(mContext, NewSpotActivity.class);
-                }
-            });
-        }
-    }
-
     public void swapCursor(Cursor cursor) {
         if (cursor != null) {
-            mCursor = cursor;
-            mIdColumn = cursor.getColumnIndexOrThrow(String.valueOf(SpotsDBSchema.SpotsTable.Colums._id));
+            mCursor = new PlaceCursorWrapper(cursor);
+            //   mIdColumn = cursor.getColumnIndexOrThrow(SpotsDBSchema.SpotsTable.Colums._id);
+            notifyDataSetChanged();
         } else {
             mCursor = null;
             mIdColumn = -1;
+            notifyItemRangeRemoved(0, getItemCount());
         }
     }
 
@@ -106,8 +125,7 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.MyViewHolder> 
             vCity = (TextView) v.findViewById(R.id.city);
             vLongitude = (TextView) v.findViewById(R.id.longitude);
             vLatitude = (TextView) v.findViewById(R.id.latitude);
-
-            v.setOnClickListener((OnClickListener) this);
+            //v.setOnClickListener((OnClickListener) this);
         }
 
         public void populateRow (SpotItem spotItem) {

@@ -39,7 +39,7 @@ public class PlacesProvider extends ContentProvider{
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         if (URI_MATCHER.match(uri) == LOCATION_ID) {
-            selection = DatabaseHelper.ALL_COLUMNS + "=?" + uri.getLastPathSegment();
+            selection = SpotsDBSchema.SpotsTable.Colums._id + "=?" + uri.getLastPathSegment();
         }
         // The data is filtered in the UI so the 'selection' argument is passed with it
         return mDatabase.query(SpotsDBSchema.SpotsTable.NAME, DatabaseHelper.ALL_COLUMNS, selection, null, null, null, null);

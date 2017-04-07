@@ -1,5 +1,6 @@
 package com.teamdating.myspots;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
@@ -13,15 +14,20 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
 
+import static android.R.attr.id;
 import static android.app.Activity.RESULT_OK;
 
 public class ListFragment extends Fragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
@@ -44,21 +50,17 @@ public class ListFragment extends Fragment implements View.OnClickListener, Load
         mCursor = new PlaceCursorWrapper(mCursor);
         mItems = new ArrayList<>();
 
-        View view = inflater.inflate(R.layout.activity_list_row, container, false);
+        View view = inflater.inflate(R.layout.activity_list, container, false);
 
         mLayoutManager = new LinearLayoutManager(this.getContext());
         mRecyclerView = (RecyclerView) view.findViewById(R.id.idRecyclerview);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(false);
-        mRecyclerView.setAdapter(new SpotAdapter(getContext(), mCursor));
+        mRecyclerView.setAdapter(new SpotAdapter(mCursor));
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(this);
-
-        /*SpotItem spotItemList[] = {
-                new SpotItem("Zara", "Haarlem", 52.378757, 4.632956)
-        };*/
 
         getLoaderManager().initLoader(0, null, this).forceLoad();
         updateUi();
@@ -70,7 +72,7 @@ public class ListFragment extends Fragment implements View.OnClickListener, Load
     private void updateUi() {
         mCursor = (PlaceCursorWrapper) mDatasource.getAllSpots();
         if (mAdapter == null) {
-            mAdapter = new SpotAdapter(getContext(), mCursor);
+            mAdapter = new SpotAdapter(mCursor);
             mRecyclerView.setAdapter(mAdapter);
         } else {
             mAdapter.swapCursor(mCursor);
@@ -105,10 +107,12 @@ public class ListFragment extends Fragment implements View.OnClickListener, Load
         getLoaderManager().restartLoader(0, null, this);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_DETAIL_REQUEST_CODE && resultCode == RESULT_OK) {
             restartLoader();
+            updateUi();
         }
     }
 }
