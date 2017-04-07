@@ -23,6 +23,10 @@ public class SpotsDataSource {
         mDatabase = dbHelper.getWritableDatabase();
     }
 
+    public void close() {
+        dbHelper.close();
+    }
+
     private static ContentValues getContentValues(SpotItem hotspots) {
         ContentValues values = new ContentValues();
 
@@ -40,7 +44,7 @@ public class SpotsDataSource {
         mDatabase.insert(SpotsDBSchema.SpotsTable.NAME, null, values);
     }
 
-    public void updateSpots (SpotItem spots) {
+    public void updateSpot(SpotItem spots) {
         String idString = Long.toString(spots.getId());
         ContentValues values = getContentValues(spots);
 

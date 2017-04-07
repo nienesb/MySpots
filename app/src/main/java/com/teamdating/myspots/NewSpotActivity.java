@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static android.R.attr.id;
 import static com.teamdating.myspots.R.id.city;
 import static com.teamdating.myspots.R.id.latitude;
 import static com.teamdating.myspots.R.id.longitude;
@@ -253,14 +254,14 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
                 if (name.length() == 0) {
                     setResult(RESULT_CANCELED);
                 } else {
-                    addPlace(mPlace);
+                    mDatasource.addSpots(mPlace);
                 }
                 break;
             case Intent.ACTION_EDIT:
                 if (name.length() == 0) {
-                    deletePlace();
+                    mDatasource.deleteSpot(id);
                 } else {
-                    updatePlace(mPlace);
+                    mDatasource.updateSpot(mPlace);
                 }
         }
         finish();
