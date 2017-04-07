@@ -60,4 +60,9 @@ public class SpotItem {
     public double getLongitude() {
         return longitude;
     }
+
+    @Override
+    public String toString() {
+        return name + city + latitude + longitude;
+    }
 }

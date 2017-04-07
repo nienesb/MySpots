@@ -36,6 +36,7 @@ import static com.teamdating.myspots.R.id.city;
 import static com.teamdating.myspots.R.id.latitude;
 import static com.teamdating.myspots.R.id.longitude;
 import static com.teamdating.myspots.R.id.name;
+import static java.security.AccessController.getContext;
 
 public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -47,6 +48,9 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
     private int PERMISSIONS_REQUEST_LOCATION;
     private GoogleMap mMap;
     private String mAction;
+    private SpotsDataSource mDatasource;
+    private PlaceCursorWrapper mCursor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,9 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mDatasource = new SpotsDataSource(this);
+        mCursor = new PlaceCursorWrapper(mCursor);
 
         mNameEditText = (EditText) findViewById(R.id.edit_text_place_name);
         mUri = getIntent().getParcelableExtra(PlacesProvider.CONTENT_ITEM_TYPE);
@@ -93,8 +100,6 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
             mNameEditText.setText(mPlace.getName());
         }
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

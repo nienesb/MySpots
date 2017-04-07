@@ -30,7 +30,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + SpotsDBSchema.SpotsTable.NAME + "( " +
-                SpotsDBSchema.SpotsTable.Colums._id + " integer primary key autoincrement, " +
+                SpotsDBSchema.SpotsTable.Colums._id + " INTEGER PRIMARY KEY, " +
                 SpotsDBSchema.SpotsTable.Colums.TITLE + ", " +
                 SpotsDBSchema.SpotsTable.Colums.CITY + ", " +
                 SpotsDBSchema.SpotsTable.Colums.LATITUDE + " REAL," +

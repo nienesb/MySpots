@@ -3,8 +3,11 @@ package com.teamdating.myspots;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.util.Log;
 
 /**
  * Created by j.boeser on 16-3-2017.
@@ -13,9 +16,11 @@ import android.hardware.camera2.params.StreamConfigurationMap;
 public class SpotsDataSource {
 
     private SQLiteDatabase mDatabase;
+    private SQLiteOpenHelper dbHelper;
 
     public SpotsDataSource (Context context) {
-        mDatabase = new DatabaseHelper(context).getWritableDatabase();
+        dbHelper = new DatabaseHelper(context);
+        mDatabase = dbHelper.getWritableDatabase();
     }
 
     private static ContentValues getContentValues(SpotItem hotspots) {
