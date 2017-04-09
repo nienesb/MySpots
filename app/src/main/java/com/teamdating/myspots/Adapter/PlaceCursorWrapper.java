@@ -1,7 +1,10 @@
-package com.teamdating.myspots;
+package com.teamdating.myspots.Adapter;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;
+
+import com.teamdating.myspots.Model.SpotItem;
+import com.teamdating.myspots.Database.SpotsDBSchema;
 
 /**
  * Created by j.boeser on 16-3-2017.

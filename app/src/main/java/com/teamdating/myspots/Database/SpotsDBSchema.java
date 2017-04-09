@@ -1,4 +1,4 @@
-package com.teamdating.myspots;
+package com.teamdating.myspots.Database;
 
 /**
  * Created by j.boeser on 16-3-2017.

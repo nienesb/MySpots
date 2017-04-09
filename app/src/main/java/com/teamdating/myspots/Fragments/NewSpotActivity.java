@@ -1,7 +1,6 @@
-package com.teamdating.myspots;
+package com.teamdating.myspots.Fragments;
 
 import android.Manifest;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -26,6 +25,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.teamdating.myspots.Adapter.PlaceCursorWrapper;
+import com.teamdating.myspots.Adapter.SpotAdapter;
+import com.teamdating.myspots.Adapter.SpotsDataSource;
+import com.teamdating.myspots.Database.DatabaseHelper;
+import com.teamdating.myspots.Database.PlacesProvider;
+import com.teamdating.myspots.Database.SpotsDBSchema;
+import com.teamdating.myspots.Model.SpotItem;
+import com.teamdating.myspots.R;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,11 +40,8 @@ import java.util.List;
 import java.util.Locale;
 
 import static android.R.attr.id;
-import static com.teamdating.myspots.R.id.city;
 import static com.teamdating.myspots.R.id.latitude;
 import static com.teamdating.myspots.R.id.longitude;
-import static com.teamdating.myspots.R.id.name;
-import static java.security.AccessController.getContext;
 
 public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -256,6 +260,7 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
                     setResult(RESULT_CANCELED);
                 } else {
                     mDatasource.addSpots(mPlace);
+                    Toast.makeText(NewSpotActivity.this, "Item is added", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case Intent.ACTION_EDIT:
@@ -265,7 +270,6 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
                     mDatasource.updateSpot(mPlace);
                 }
         }
-        mAdapter.notifyDataSetChanged();
         finish();
     }
 
