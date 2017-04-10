@@ -1,4 +1,4 @@
-package com.teamdating.myspots;
+package com.teamdating.myspots.Database;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;

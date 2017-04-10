@@ -1,26 +1,26 @@
-package com.teamdating.myspots;
+package com.teamdating.myspots.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.CursorWrapper;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.CursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.teamdating.myspots.Model.SpotItem;
+import com.teamdating.myspots.Fragments.NewSpotActivity;
+import com.teamdating.myspots.Database.PlacesProvider;
+import com.teamdating.myspots.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import static android.R.attr.id;
 import static android.app.PendingIntent.getActivity;
-import static android.support.v4.app.ActivityCompat.startActivityForResult;
 import static android.support.v7.widget.RecyclerView.*;
 
 /**
@@ -77,7 +77,9 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.MyViewHolder> 
                 @Override
                 public boolean onLongClick(View v) {
                     mDatasource = new SpotsDataSource(v.getContext());
-                    mDatasource.deleteSpot(id);
+                    mDatasource.deleteSpot(itemId);
+                    Toast.makeText(v.getContext(), "Item is deleted", Toast.LENGTH_SHORT).show();
+                    notifyItemChanged(id);
                     return true;
                 }
             });

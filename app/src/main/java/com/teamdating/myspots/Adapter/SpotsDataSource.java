@@ -1,13 +1,13 @@
-package com.teamdating.myspots;
+package com.teamdating.myspots.Adapter;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.hardware.camera2.params.StreamConfigurationMap;
-import android.util.Log;
+
+import com.teamdating.myspots.Database.DatabaseHelper;
+import com.teamdating.myspots.Model.SpotItem;
+import com.teamdating.myspots.Database.SpotsDBSchema;
 
 /**
  * Created by j.boeser on 16-3-2017.
@@ -40,7 +40,6 @@ public class SpotsDataSource {
 
     public void addSpots (SpotItem spots) {
         ContentValues values = getContentValues(spots);
-
         mDatabase.insert(SpotsDBSchema.SpotsTable.NAME, null, values);
     }
 

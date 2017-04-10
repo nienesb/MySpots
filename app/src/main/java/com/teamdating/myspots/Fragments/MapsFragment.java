@@ -1,4 +1,4 @@
-package com.teamdating.myspots;
+package com.teamdating.myspots.Fragments;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.teamdating.myspots.R;
 
 public class MapsFragment extends FragmentActivity implements OnMapReadyCallback {
 

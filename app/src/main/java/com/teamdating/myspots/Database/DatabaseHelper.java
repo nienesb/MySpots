@@ -1,9 +1,8 @@
-package com.teamdating.myspots;
+package com.teamdating.myspots.Database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import static com.teamdating.myspots.SpotsDBSchema.SpotsTable.Colums.LONGITUDE;
 
 /**
  * Created by j.boeser on 16-3-2017.

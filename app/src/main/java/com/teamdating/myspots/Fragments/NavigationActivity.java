@@ -1,4 +1,4 @@
-package com.teamdating.myspots;
+package com.teamdating.myspots.Fragments;
 
 import android.app.*;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.google.android.gms.maps.MapFragment;
+import com.teamdating.myspots.Fragments.*;
+import com.teamdating.myspots.R;
 
 public class NavigationActivity extends AppCompatActivity {
 
@@ -15,7 +17,6 @@ public class NavigationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
-
         
         setupNavigationView();
     }
@@ -56,7 +57,7 @@ public class NavigationActivity extends AppCompatActivity {
                 break;
             case R.id.navigation_list:
                 // Action to perform when List Menu item is selected.
-                pushFragment(new ListFragment());
+                pushFragment(new com.teamdating.myspots.Fragments.ListFragment());
                 break;
             case R.id.navigation_map:
                 // Action to perform when Map Menu item is selected.

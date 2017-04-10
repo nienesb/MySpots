@@ -1,6 +1,5 @@
-package com.teamdating.myspots;
+package com.teamdating.myspots.Fragments;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
@@ -14,20 +13,20 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+
+import com.teamdating.myspots.Adapter.PlaceCursorWrapper;
+import com.teamdating.myspots.Database.PlacesProvider;
+import com.teamdating.myspots.R;
+import com.teamdating.myspots.Adapter.SpotAdapter;
+import com.teamdating.myspots.Model.SpotItem;
+import com.teamdating.myspots.Adapter.SpotsDataSource;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sql.DataSource;
-
-import static android.R.attr.id;
 import static android.app.Activity.RESULT_OK;
 
 public class ListFragment extends Fragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
