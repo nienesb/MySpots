@@ -4,14 +4,8 @@
     tools:context="com.teamdating.myspots.Fragments.NewSpotActivity">
 
     <item
-        android:id="@+id/add_place"
-        android:icon="@drawable/ic_check_black_24dp"
-        app:showAsAction="ifRoom"
-        android:title="Search" />
-
-    <item
-        android:id="@+id/delete_place"
-        android:icon="@drawable/delete_icon"
+        android:id="@+id/edit_place"
+        android:icon="@drawable/ic_mode_edit_black_24dp"
         app:showAsAction="ifRoom"
         android:title="Edit" />
 

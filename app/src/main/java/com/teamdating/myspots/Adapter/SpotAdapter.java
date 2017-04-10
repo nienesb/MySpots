@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.teamdating.myspots.Database.SpotsDBSchema;
 import com.teamdating.myspots.Model.SpotItem;
 import com.teamdating.myspots.Fragments.NewSpotActivity;
 import com.teamdating.myspots.Database.PlacesProvider;
@@ -29,16 +30,10 @@ import static android.support.v7.widget.RecyclerView.*;
 
 public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.MyViewHolder> {
 
-    private Context mContext;
     private PlaceCursorWrapper mCursor;
     private SpotsDataSource mDatasource;
-
-    // A reference to the column, used to get the ID of an item.
     private int mIdColumn;
-
     private static final int EDITOR_REQUEST_CODE = 1234;
-
-    private List<SpotItem> spotItemList = new ArrayList<>();
 
     public SpotAdapter(Cursor cursor) {
         swapCursor(cursor);
@@ -105,7 +100,7 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.MyViewHolder> 
     public void swapCursor(Cursor cursor) {
         if (cursor != null) {
             mCursor = new PlaceCursorWrapper(cursor);
-            //   mIdColumn = cursor.getColumnIndexOrThrow(SpotsDBSchema.SpotsTable.Colums._id);
+            // mIdColumn = cursor.getColumnIndexOrThrow(SpotsDBSchema.SpotsTable.Colums._id);
             notifyDataSetChanged();
         } else {
             mCursor = null;

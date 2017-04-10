@@ -194,8 +194,7 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
         if (requestCode == PERMISSIONS_REQUEST_LOCATION) {
             // If request is cancelled, the result arrays are empty.
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // permission was granted, yay! Do the
-                // location-related task you need to do.
+                // permission was granted, yay!
                 enableMyLocation();
             } else {
                 // Otherwise, disable functionality that requires permission(s)
@@ -206,7 +205,6 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
 
     // This method returns a String value representing the name of the city given any coordinates.
     // When no city is found a default value will be returned
-    
     private String showCityName(double latitude, double longitude) {
         String cityName = "*No City*";
         Geocoder geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
@@ -260,14 +258,16 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
                     setResult(RESULT_CANCELED);
                 } else {
                     mDatasource.addSpots(mPlace);
-                    Toast.makeText(NewSpotActivity.this, "Item is added", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NewSpotActivity.this, name + " is added", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case Intent.ACTION_EDIT:
                 if (name.length() == 0) {
                     mDatasource.deleteSpot(id);
+                    Toast.makeText(NewSpotActivity.this, name + " is deleted", Toast.LENGTH_SHORT).show();
                 } else {
                     mDatasource.updateSpot(mPlace);
+                    Toast.makeText(NewSpotActivity.this, name + " is updated", Toast.LENGTH_SHORT).show();
                 }
         }
         finish();
@@ -281,6 +281,9 @@ public class NewSpotActivity extends AppCompatActivity implements OnMapReadyCall
                 break;
             case R.id.delete_place:
                 mDatasource.deleteSpot(id);
+                break;
+            case R.id.edit_place:
+                finishEditing();
                 break;
             case R.id.add_place:
                 finishEditing();

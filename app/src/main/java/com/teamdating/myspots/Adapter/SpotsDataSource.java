@@ -46,10 +46,16 @@ public class SpotsDataSource {
     public void updateSpot(SpotItem spots) {
         String idString = Long.toString(spots.getId());
         ContentValues values = getContentValues(spots);
-
         mDatabase.update(SpotsDBSchema.SpotsTable.NAME, values,
                 SpotsDBSchema.SpotsTable.Colums._id + "=?",
                 new String[] {idString});
+    }
+
+    public void deleteSpot(long id) {
+        String idString = Long.toString(id);
+        mDatabase.delete(SpotsDBSchema.SpotsTable.NAME,
+                SpotsDBSchema.SpotsTable.Colums._id + "=?",
+                new String[]{idString});
     }
 
     private PlaceCursorWrapper querySpots(String whereClause, String[] whereArgs) {
@@ -81,12 +87,5 @@ public class SpotsDataSource {
         } finally {
             cursor.close();
         }
-    }
-
-    public void deleteSpot(long id) {
-        String idString = Long.toString(id);
-        mDatabase.delete(SpotsDBSchema.SpotsTable.NAME,
-                SpotsDBSchema.SpotsTable.Colums._id + "=?",
-                new String[] {idString});
     }
 }

@@ -18,9 +18,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static double LATITUDE;
     private static double LONGITUDE;
     public static final String[] ALL_COLUMNS = new String[]{"_id", "name", "city", "latitude", "longitude"};
-
    // public static final String[] ALL_COLUMNS = new String[]{_id, TITLE, CITY, String.valueOf(LATITUDE), String.valueOf(LONGITUDE)};
-
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
