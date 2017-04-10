@@ -58,7 +58,7 @@ public class ListFragment extends Fragment implements View.OnClickListener, Load
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(false);
         mRecyclerView.setAdapter(new SpotAdapter(mCursor));
-
+        
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(this);
 
